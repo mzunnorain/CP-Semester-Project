@@ -26,6 +26,8 @@ void Easybattle();
 void addRewardToInventory(const string& reward);
 void displayInventory();
 void Showquestsandbattle(string b);
+void Bosslevel(int x);
+int levelUp(int a);
 int ReadHighScore();
 void WriteHighScore(int score);
 int ReadHighScore2();
@@ -35,15 +37,15 @@ void WriteHighScore3(int score);
 void showHighscore();
 void Menu();
 void Gamesetup();
-void endingProgram();
+void endingProgram(string difficulty);
+
+string major_difficulty = "easy";
 int maxscore = ReadHighScore();
 int maxscore2 = ReadHighScore2();
 int maxscore3 = ReadHighScore3();
 int score;
-bool flag = true;
+bool flag;
 string inventory[8];
-void Bosslevel(int x);
-int levelUp(int a);
 
 
 struct {
@@ -671,10 +673,11 @@ void Hardbattle() {
 		if (character.Health <= 0) {
 			cout << randomWord << " defeated " << character.Name;
 			flag = false;
+			character.Health = 0;
 			cout << "\n\nYOU HAVE LOST.\n\n";
 			displayCharacter();
 			cout << "\n\n";
-			endingProgram();
+			endingProgram(major_difficulty);
 
 			if (character.EXP < 0) {
 				character.EXP = 0;
@@ -755,10 +758,11 @@ void Mediumbattle() {
 		if (character.Health <= 0) {
 			cout << randomWord << " defeated " << character.Name;
 			flag = false;
+			character.Health = 0;
 			cout << "\n\nYOU HAVE LOST.\n\n";
 			displayCharacter();
 			cout << "\n\n";
-			endingProgram();
+			endingProgram(major_difficulty);
 
 			if (character.EXP < 0) {
 				character.EXP = 0;
@@ -803,7 +807,7 @@ void Easybattle() {
 
 	do {
 		int a = rand() % 50;
-		int b = rand() % 50;
+		int b = rand() % 10;
 		if (a == 0) {
 			cout << randomWord << " survived " << character.Name << "'s attack." << endl;
 		}
@@ -842,7 +846,7 @@ void Easybattle() {
 			cout << "\n\nYOU HAVE LOST\n\n";
 			displayCharacter();
 			cout << "\n\n";
-			endingProgram();
+			endingProgram(major_difficulty);
 			break;
 
 			if (character.EXP < 0) {
@@ -915,7 +919,7 @@ void Bosslevel(int x) {
 				flag = false;
 				displayCharacter();
 				cout << "\n\n";
-				endingProgram();
+				endingProgram(major_difficulty);
 				if (character.Health < 0)
 					character.Health = 0;
 
@@ -991,8 +995,11 @@ void Showquestsandbattle(string p) {
 
 		cout << "\nPress 0 to Exit:";
 		cin >> c;
-		cin.ignore();
-		clearScreen();
+
+		if (c == 0) {
+			clearScreen();
+			endingProgram(major_difficulty);
+		}
 
 	} while (c != 0);
 
@@ -1009,7 +1016,8 @@ void Menu() {
 	cout << "Enter your choice (1-4): ";
 }
 
-void endingProgram() {
+void endingProgram(string difficulty) {
+
 	int take2;
 	cout << "\n\n1. Play Again.\n";
 	cout << "2. High Scores.\n";
@@ -1019,7 +1027,7 @@ void endingProgram() {
 	cin >> take2;
 	switch (take2) {
 	case 1:
-		Gamesetup();
+		Showquestsandbattle(difficulty);
 		break;
 	case 2:
 		showHighscore();
@@ -1039,9 +1047,8 @@ void endingProgram() {
 void Gamesetup() {
 	int take;
 	string difficulty = "easy"; // Default difficulty
-
+	Menu();
 	do {
-		Menu();
 		cin >> take;
 
 		switch (take) {
@@ -1051,11 +1058,12 @@ void Gamesetup() {
 			break;
 		case 2:
 			showHighscore();
-			endingProgram();
+			endingProgram(difficulty);
 			break;
 		case 3:
 			clearScreen();
 			difficulty = difficultyLevel(); // Set the difficulty
+			major_difficulty = difficulty;
 			cout << "\n\n";
 			break;
 		case 4:
@@ -1072,7 +1080,7 @@ void Gamesetup() {
 			break;
 		}
 	} while (take != 4);
-	endingProgram();
+	endingProgram(difficulty);
 }
 
 int main() {
