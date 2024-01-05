@@ -88,58 +88,59 @@ void Gamesetup() {
 	int menuLabel;
 
 menuLabel: // Label for goto statement
+	do {
+		Menu();
+		cin >> take;
+		if (cin.fail() || take < 0 || take > 5) {
+			cout << "\n\nInvalid input. Please enter a number between 0 and 5.\n" << endl;
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			clearScreen();
+			goto menuLabel; // Jump back to the Menu
+		}
 
-	Menu();
-	cin >> take;
-	if (cin.fail() || take < 0 || take > 5) {
-		cout << "\n\nInvalid input. Please enter a number between 0 and 5.\n" << endl;
-		cin.clear();
-		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 		clearScreen();
-		goto menuLabel; // Jump back to the Menu
-	}
-
-	clearScreen();
-	if (cin.eof())
-	{
-		cin.ignore(numeric_limits<streamsize>::max(), '\n');
-		clearScreen();
-		goto menuLabel;
-	}
+		if (cin.eof())
+		{
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			clearScreen();
+			goto menuLabel;
+		}
 
 
-	switch (take) {
-	case 1:
-		clearScreen();
-		Showquestsandbattle(); // Pass the selected difficulty
-		break;
-	case 2:
-		clearScreen();
-		showHighscore();
-		break;
-	case 3:
-		clearScreen();
-		difficulty = difficultyLevel(); // Set the difficulty
-		major_difficulty = difficulty;
-		clearScreen();
-		cout << "\n\n";
-		break;
-	case 4:
-		clearScreen();
-		displayInventory();
-		cout << "\n\n";
-		break;
-	case 5:
-		clearScreen();
-		Showstory();
-		break;
-	case 0:
-		exit(0);
-		break;
-	default:
-		clearScreen();
-		goto menuLabel; // Jump back to the Menu
-	}
+		switch (take) {
+		case 1:
+			clearScreen();
+			Showquestsandbattle(); // Pass the selected difficulty
+			break;
+		case 2:
+			clearScreen();
+			showHighscore();
+			break;
+		case 3:
+			clearScreen();
+			difficulty = difficultyLevel(); // Set the difficulty
+			major_difficulty = difficulty;
+			clearScreen();
+			cout << "\n\n";
+			break;
+		case 4:
+			clearScreen();
+			displayInventory();
+			cout << "\n\n";
+			break;
+		case 5:
+			clearScreen();
+			Showstory();
+			break;
+		case 0:
+			exit(0);
+			break;
+		default:
+			clearScreen();
+			goto menuLabel; // Jump back to the Menu
+		}
+	} while (take != 0);
 	clearScreen();
 	goto menuLabel; // Loop back to the Menu after finishing a task
 }
@@ -148,6 +149,7 @@ menuLabel: // Label for goto statement
 
 //Displaying Menu
 void Menu() {
+	cout << "Eldoria's Battlefield";
 	cout << "\tMAIN MENU\n";
 	cout << "1. Start Game.\n";
 	cout << "2. High Scores.\n";
@@ -258,55 +260,28 @@ back:
 
 
 void characterCreation() {
-	int start;
-	int come;
-
 
 	cout << "Enter name of your Character: ";
 	cin >> character.Name;
-	cin.ignore(numeric_limits<streamsize>::max(), '\n');
-come:
-	cout << "Choose your class.\n1.Warrior\n2.Rogue\n3.Mage\nChoose from(1 to 3)";
-	cin >> start;
-	cin.ignore(numeric_limits<streamsize>::max(), '\n');
-	if (cin.fail() || start < 1 || start > 3) {
-
-		cout << "\n\nInvalid input. Please enter a number between 1 and 3.\n" << endl;
-		cin.clear();
-		cin.ignore(numeric_limits<streamsize>::max(), '\n');
-		clearScreen();
-		goto come;
-
-
-		if (cin.eof())
-		{
-			cin.ignore(numeric_limits<streamsize>::max(), '\n');
-			clearScreen();
-			goto come;
-		}
-	}
-
-	if (start == 1)
-	{
-		character.Class = "Warrior";
-	}
-	if (start == 2)
-	{
-		character.Class = "Rogue";
-	}
-	if (start == 3)
-	{
-		character.Class = "Mage";
-	}
-
-
-
-	character.Health = 100;
+	cin.ignore(1000, '\n');
+	cout << "Choose your class('Warrior','Rogue','Mage'): ";
+	cin >> character.Class;
+	cin.clear();
+	cin.ignore();
+	character.Health = 100;                                         //Function for Character Creation
 	character.EXP = 0;
 	character.level = 1;
+	while (!isValidclass(character.Class)) {
+		cout << "Invalid Class. provide a Valid Class: ";
+		cin >> character.Class;
+	}
+	if (isValidclass(character.Class)) {
+		clearScreen();
+	}
 }
 
 
+// Function for cheking valid class
 bool isValidclass(string Class) {
 	if (Class == "Warrior" || Class == "Rogue" || Class == "Mage") {
 		return true;
