@@ -259,36 +259,44 @@ back:
 
 void characterCreation() {
 	int start;
+	int come;
+
 
 	cout << "Enter name of your Character: ";
 	cin >> character.Name;
 	cin.ignore(numeric_limits<streamsize>::max(), '\n');
-start:
-	cout << "Choose your class ('Warrior', 'Rogue', 'Mage'): ";
-	cin >> character.Class;
+come:
+	cout << "Choose your class.\n1.Warrior\n2.Rogue\n3.Mage\nChoose from(1 to 3)";
+	cin >> start;
 	cin.ignore(numeric_limits<streamsize>::max(), '\n');
-	while (cin.eof())
-	{
-		exit(0);
+	if (cin.fail() || start < 1 || start > 3) {
+
+		cout << "\n\nInvalid input. Please enter a number between 1 and 3.\n" << endl;
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		clearScreen();
+		goto come;
+
+
+		if (cin.eof())
+		{
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			clearScreen();
+			goto come;
+		}
 	}
 
-	while (!isValidclass(character.Class))
+	if (start == 1)
 	{
-		if (cin.eof()) {
-			break;
-			clearScreen();
-			cout << "Unexpected input. Exiting character creation.\n";
-			break;
-		}
-
-		if (isValidclass(character.Class)) {
-			clearScreen();
-			break;
-		}
-		else {
-			clearScreen();
-			cout << "Invalid Class. Provide a Valid Class or type 'exit' to quit: ";
-		}
+		character.Class = "Warrior";
+	}
+	if (start == 2)
+	{
+		character.Class = "Rogue";
+	}
+	if (start == 3)
+	{
+		character.Class = "Mage";
 	}
 
 
