@@ -3,7 +3,8 @@
 #include <fstream>
 #include <cstdlib>
 #include <ctime>
-#include<iomanip>
+#include<conio.h>
+
 
 using namespace std;
 
@@ -24,7 +25,7 @@ void HardBattle(int questnumber);                                               
 void MediumBattle(int questnumber);                                                                                    //Ln 793                //Functions Prototypes
 void EasyBattle(int questnumber);                                                                                      //Ln 899
 int levelUp(int a);                                                                                                    //Ln 985
-void Bosslevel(int x);                                                                                                 //Ln 997
+void Bosslevel();                                                                                                      //Ln 997
 void addRewardToInventory(const string& reward);                                                                       //Ln 1082
 void displayInventory();                                                                                               //Ln 1097
 void addtoStory1(const string& describe);                                                                              //Ln 1110
@@ -49,9 +50,9 @@ int maxscore3 = ReadHighScore3();
 string inventory[6];            //array for inventory
 int mission2[5] = { 0 };                  //for inventory check
 
-string story1 = " ";
-string story2 = " ";      //for different stories
-string story3 = " ";
+string story1 = "In the quiet of his village, Warrior, once a humble blacksmith, forged tales into swords, Fate's twist led him from the anvil's song to the symphony of clashes, where his hammers became his weapons, shaping not just metal but the very destiny he once only crafted, Now he is on a mission...to conquer the mythical land od Eldoria\n";
+string story2 = "A master of shadows, the rogue prowls Eldoria's alleys, her past veiled in mystery, With agile steps and swift daggers, she dances amidst chaos, seeking redemption through elusive quests and daring escapades, Now she is on a mission...to conquer the mythial land of Eldoria\n";
+string story3 = "In the arcane halls of Eldoria, the mage weaves spells as intricate tapestries, each incantation an echo of ancient knowledge, Their history shrouded in mystique, their presence a flickering ember amidst the city's magical marvels, Now he is on a mission...to conquer the mythical land of Eldoria \n";
 
 
 
@@ -96,12 +97,12 @@ void Gamesetup() {
 		case '2':
 			clearScreen();
 			showHighscore();
-
 			break;
 		case '3':
 			clearScreen();
 			difficulty = difficultyLevel(); // Set the difficulty
 			major_difficulty = difficulty;
+			clearScreen();
 			cout << "\n\n";
 			break;
 		case '4':
@@ -117,8 +118,8 @@ void Gamesetup() {
 			exit(0);
 			break;
 		default:
-			cout << "Invalid Input\n\n";
-			break;
+			clearScreen();
+			Gamesetup();
 		}
 
 	} while (take != 6);
@@ -176,7 +177,7 @@ void endingProgram(string difficulty) {
 
 	char take2;
 	do {
-		cout << "\n\n1. Play Again.\n";
+		cout << "\n\n1. Start Again.\n";
 		cout << "2. High Scores.\n";
 		cout << "3. Inventory.\n";
 		cout << "4. Storyline.\n";
@@ -191,14 +192,17 @@ void endingProgram(string difficulty) {
 			Showquestsandbattle();
 			break;
 		case '2':
+			clearScreen();
 			showHighscore();
 			exit(0);                   //exit after showing
 			break;
 		case '3':
+			clearScreen();
 			displayInventory();
 			exit(0);         //exit after showing
 			break;
 		case '4':
+			clearScreen();
 			Showstory();
 			exit(0);
 			break;
@@ -267,11 +271,12 @@ void displayCharacter() {
 // Function for selecting difficulty level
 string difficultyLevel() {
 	string difficulty;
-	cout << "Choose your difficulty Level (Easy, Medium, Hard):";
+	cout << "Choose your difficulty Level (Easy, Medium, Hard)\n";
 	getline(cin, difficulty);
 	while (!isValiddifficulty(difficulty)) {              //not getting difficulty right
 		cout << "Enter Valid Input: ";
 		getline(cin, difficulty);
+		clearScreen();
 	}
 
 	return difficulty;
@@ -293,17 +298,17 @@ void WarriorQuests() {
 	int choice;
 	Quest quest[5];
 
-	quest[0].name_description = "Valor's Lost Blade: Retrieve legendary sword.";
-	quest[1].name_description = "Kingdom's Defense: Battle invading monsters.";
-	quest[2].name_description = "Ally Rescue Mission : Save captured friend";
-	quest[3].name_description = "Coliseum Gladiator Trials : Win arena battles.";
-	quest[4].name_description = "Sacred Temple Journey : Seek ancient wisdom.";
+	quest[0].name_description = "Valor's Lost Blade, Retrieve legendary sword.";
+	quest[1].name_description = "Kingdom's Defense, Battle invading monsters.";
+	quest[2].name_description = "Ally Rescue Mission, Save captured friend";
+	quest[3].name_description = "Coliseum Gladiator Trials, Win arena battles.";
+	quest[4].name_description = "Sacred Temple Journey, Seek ancient wisdom.";
 
-	quest[0].EXP = 5;
-	quest[1].EXP = 10;
-	quest[2].EXP = 15;
-	quest[3].EXP = 20;
-	quest[4].EXP = 25;
+	quest[0].EXP = 10;
+	quest[1].EXP = 15;
+	quest[2].EXP = 20;
+	quest[3].EXP = 25;
+	quest[4].EXP = 30;
 
 	quest[0].reward = "Legendary Sword";
 	quest[1].reward = "Spear";
@@ -312,7 +317,7 @@ void WarriorQuests() {
 	quest[4].reward = "Polearms";
 
 	do {
-		cout << "Choose a Quest you want to embark on:\n" << endl;
+		cout << "Choose a Quest you want to embark on, 0 to go back \n" << endl;
 		cout << "Quest,\tEXP,\tReward\n";
 		for (int i = 0; i < 5; i++) {
 			cout << i + 1 << ". " << quest[i].name_description << ", " << quest[i].EXP << ", " << quest[i].reward << endl;
@@ -320,8 +325,8 @@ void WarriorQuests() {
 		cout << "Enter your Quest (1-5): ";
 		cin >> choice;
 
-		if (cin.fail() || choice < 1 || choice > 5) {
-			cout << "Invalid input. Please enter a number between 1 and 5." << endl;
+		if (cin.fail() || choice < 0 || choice > 5) {
+			cout << "Invalid input. Please enter a number between 1 and 5.\n" << endl;
 			cin.clear();
 			cin.ignore();
 		}
@@ -399,6 +404,10 @@ void WarriorQuests() {
 		}
 		levelUp(character.EXP);
 		break;
+	case 0:
+		clearScreen();
+		Gamesetup();
+		break;
 	}
 
 
@@ -421,17 +430,17 @@ void RogueQuests() {
 	int choice;
 	Quest quest[5];
 
-	quest[0].name_description = "Thieves' Heist: Execute daring theft.";
-	quest[1].name_description = "Shadow Guild Espionage : Infiltrate rival guild.";
-	quest[2].name_description = "Assassin's Mark: Eliminate high-profile targets.";
-	quest[3].name_description = "Black Market Smuggling : Transport contraband discreetly.";
-	quest[4].name_description = "Mystic Relic Retrieval : Secure mystical artifact.";
+	quest[0].name_description = "Thieves' Heist, Execute daring theft.";
+	quest[1].name_description = "Shadow Guild Espionage, Infiltrate rival guild.";
+	quest[2].name_description = "Assassin's Mark, Eliminate high-profile targets.";
+	quest[3].name_description = "Black Market Smuggling, Transport contraband discreetly.";
+	quest[4].name_description = "Mystic Relic Retrieval, Secure mystical artifact.";
 
-	quest[0].EXP = 5;
-	quest[1].EXP = 10;
-	quest[2].EXP = 15;
-	quest[3].EXP = 20;
-	quest[4].EXP = 25;
+	quest[0].EXP = 10;
+	quest[1].EXP = 15;
+	quest[2].EXP = 20;
+	quest[3].EXP = 25;
+	quest[4].EXP = 30;
 
 	quest[0].reward = "Whip";
 	quest[1].reward = "Scimiter";
@@ -440,7 +449,7 @@ void RogueQuests() {
 	quest[4].reward = "Blowgun";
 
 	do {
-		cout << "Choose a Quest you want to embark on:\n" << endl;
+		cout << "Choose a Quest you want to embark on, 0 to go back\n" << endl;
 		cout << "Quest,\tEXP,\tReward\n";
 		for (int i = 0; i < 5; i++) {
 			cout << i + 1 << ". " << quest[i].name_description << ", " << quest[i].EXP << ", " << quest[i].reward << endl;
@@ -448,8 +457,8 @@ void RogueQuests() {
 		cout << "Enter your Quest (1-5): ";
 		cin >> choice;
 
-		if (cin.fail() || choice < 1 || choice > 5) {
-			cout << "Invalid input. Please enter a number between 1 and 5." << endl;
+		if (cin.fail() || choice < 0 || choice > 5) {
+			cout << "Invalid input. Please enter a number between 1 and 5.\n" << endl;
 			cin.clear();
 			cin.ignore();
 		}
@@ -531,6 +540,12 @@ void RogueQuests() {
 		}
 		levelUp(character.EXP);
 		break;
+	case 0:
+	{
+		clearScreen();
+		Gamesetup();
+	}
+	break;
 	}
 
 
@@ -552,17 +567,17 @@ void MageQuests() {
 	int choice;
 	Quest quest[5];
 
-	quest[0].name_description = "Arcane Library Restoration : Recover ancient knowledge.";
-	quest[1].name_description = "Elemental Balance : Restore elemental harmony.";
-	quest[2].name_description = "Astral Beacon Rekindling : Reignite celestial beacons.";
-	quest[3].name_description = "Spellcaster's Trial: Master magical labyrinth.";
-	quest[4].name_description = "Ethereal Nexus Connection : Forge ethereal alliances.";
+	quest[0].name_description = "Arcane Library Restoration, Recover ancient knowledge.";
+	quest[1].name_description = "Elemental Balance, Restore elemental harmony.";
+	quest[2].name_description = "Astral Beacon Rekindling, Reignite celestial beacons.";
+	quest[3].name_description = "Spellcaster's Trial, Master magical labyrinth.";
+	quest[4].name_description = "Ethereal Nexus Connection, Forge ethereal alliances.";
 
-	quest[0].EXP = 5;
-	quest[1].EXP = 10;
-	quest[2].EXP = 15;
-	quest[3].EXP = 20;
-	quest[4].EXP = 25;
+	quest[0].EXP = 10;
+	quest[1].EXP = 15;
+	quest[2].EXP = 20;
+	quest[3].EXP = 30;
+	quest[4].EXP = 35;
 
 	quest[0].reward = "Staff";
 	quest[1].reward = "Wand";
@@ -574,7 +589,7 @@ void MageQuests() {
 
 
 	do {
-		cout << "Choose a Quest you want to embark on:\n" << endl;
+		cout << "Choose a Quest you want to embark on, 0 to go back\n" << endl;
 		cout << "Quest,\tEXP,\tReward\n";
 		for (int i = 0; i < 5; i++) {
 			cout << i + 1 << ". " << quest[i].name_description << ", " << quest[i].EXP << ", " << quest[i].reward << endl;
@@ -582,8 +597,8 @@ void MageQuests() {
 		cout << "Enter your Quest (1-5): ";
 		cin >> choice;
 
-		if (cin.fail() || choice < 1 || choice > 5) {
-			cout << "Invalid input. Please enter a number between 1 and 5." << endl;
+		if (cin.fail() || choice < 0 || choice > 5) {
+			cout << "Invalid input. Please enter a number between 1 and 5.\n" << endl;
 			cin.clear();
 			cin.ignore(1000, '\n');
 		}
@@ -664,6 +679,12 @@ void MageQuests() {
 		character.EXP += quest[4].EXP;
 		levelUp(character.EXP);         //pass exp to levelup
 		break;
+	case 0:
+	{
+		clearScreen();
+		Gamesetup();
+	}
+	break;
 	}
 
 	//Battles according to the diffiulties and passing the questnumber to inrease difficulties of eah quest
@@ -701,41 +722,29 @@ void HardBattle(int questnumber) {
 	string randomWord;
 
 	if (character.level > 5) {
-		cout << "\nPress 1 to play level or 0 to exit:"; // Boss level after 5
-		int answer;
-		cin >> answer;
-
-		if (answer == 1) {
-			Bosslevel(character.level);
-			return; // Exit the function after calling Bosslevel
-		}
-		else {
-			clearScreen();
-			displayCharacter();
-			return;
-		}
+		clearScreen();
+		Bosslevel();
 	}
+
 	else {
 		int baseHealth = 100;
 		randomWord_health = baseHealth + (character.level * 20) + (questnumber * 10); // Increasing difficulty for levels & questnumbers
 		randomWord = getRandomWord();
 	}
 
-	string input;
+	char input;
 	do {
 		cout << "Press Enter to attack or 0 to exit...\n"; // Enter to attack and 0 to exit
-		cin.ignore();
-		getline(cin, input);
+		input = _getch();
 
-
-		if (input == "0") {
+		if (input == '0') {
 			clearScreen();
-			displayCharacter();
-			endingProgram(major_difficulty);
+			character.score = 0;
+			Gamesetup();
 			break;
 		}
 
-		int attackByCharacter = rand() % (10 + 30);            //ur damage
+		int attackByCharacter = rand() % 20;            //ur damage
 		int attackByEnemy = rand() % 50;                   //enemy damage
 
 		if (attackByCharacter == 0) {
@@ -750,12 +759,12 @@ void HardBattle(int questnumber) {
 		if (randomWord_health <= 0) {
 			cout << character.Name << " defeated " << randomWord;
 			character.Health = 100;                                        // If won the battle
-			character.EXP += 20;
+			character.EXP += 30;
 			break;
 		}
 
 		cout << "Press Enter to see enemy's attack...\n";
-		getline(cin, input);
+		input = _getch();
 
 		if (attackByEnemy == 0) {
 			cout << character.Name << " survived " << randomWord << "'s attack." << endl << endl;
@@ -771,7 +780,7 @@ void HardBattle(int questnumber) {
 		if (character.Health <= 0) {
 			cout << randomWord << " defeated " << character.Name;
 			character.Health = 0;
-			character.EXP -= (questnumber * 5);
+			character.EXP -= (questnumber * 5 + 5);
 			clearScreen();                                            // If lost the battle
 			cout << "\n\nYOU HAVE LOST\n\n";
 			displayCharacter();
@@ -780,7 +789,7 @@ void HardBattle(int questnumber) {
 		}
 
 
-	} while (character.Health >= 0 && randomWord_health >= 0);
+	} while (character.Health >= 0 || randomWord_health >= 0);
 
 
 	if (maxscore3 <= character.score) {
@@ -797,37 +806,26 @@ void MediumBattle(int questnumber) {
 	string randomWord;
 
 	if (character.level > 5) {
-		cout << "\nPress 1 to play level or 0 to exit:"; // Boss level after 5
-		int answer;
-		cin >> answer;
-
-		if (answer == 1) {
-			Bosslevel(character.level);
-			return; // Exit the function after calling Bosslevel
-		}
-		else {
-			clearScreen();
-			displayCharacter();
-			return;
-		}
+		clearScreen();
+		Bosslevel();
 	}
+
 	else {
 		int baseHealth = 100;
 		randomWord_health = baseHealth + (character.level * 20) + (questnumber * 10); // Increasing difficulty for levels & questnumbers
 		randomWord = getRandomWord();
 	}
 
-	string input;
+	char input;
 	do {
 		cout << "Press Enter to attack or 0 to exit...\n"; // Enter to attack and 0 to exit
-		cin.ignore();
-		getline(cin, input);
+		input = _getch();
 
 
-		if (input == "0") {
+		if (input == '0') {
 			clearScreen();
-			displayCharacter();
-			endingProgram(major_difficulty);
+			character.score = 0;
+			Gamesetup();
 			break;
 		}
 
@@ -846,12 +844,12 @@ void MediumBattle(int questnumber) {
 		if (randomWord_health <= 0) {
 			cout << character.Name << " defeated " << randomWord;
 			character.Health = 100;                                        // If won
-			character.EXP += 10;
+			character.EXP += 20;
 			break;
 		}
 
 		cout << "Press Enter to see enemy's attack...\n";
-		getline(cin, input);
+		input = _getch();
 
 		if (attackByEnemy == 0) {
 			cout << character.Name << " survived " << randomWord << "'s attack." << endl << endl;
@@ -867,7 +865,7 @@ void MediumBattle(int questnumber) {
 		if (character.Health <= 0) {
 			cout << randomWord << " defeated " << character.Name;
 			character.Health = 0;
-			character.EXP -= (questnumber * 5);
+			character.EXP -= (questnumber * 5 + 5);
 			clearScreen();                                            // If lost
 			cout << "\n\nYOU HAVE LOST\n\n";
 			endingProgram(major_difficulty);
@@ -875,7 +873,7 @@ void MediumBattle(int questnumber) {
 		}
 
 
-	} while (character.Health >= 0 && randomWord_health >= 0);
+	} while (character.Health >= 0 || randomWord_health >= 0);
 
 
 	if (maxscore2 <= character.score) {
@@ -893,42 +891,31 @@ void EasyBattle(int questnumber) {
 	string randomWord;
 
 	if (character.level > 5) {
-		cout << "\nPress 1 to play level or 0 to exit:"; // Boss level after 5
-		int answer;
-		cin >> answer;
-
-		if (answer == 1) {
-			Bosslevel(character.level);
-			return; // Exit the function after calling Bosslevel
-		}
-		else {
-			clearScreen();
-			displayCharacter();
-			return;
-		}
+		clearScreen();
+		Bosslevel();
 	}
+
 	else {
 		int baseHealth = 100;
 		randomWord_health = baseHealth + (character.level * 20) + (questnumber * 10); // Increasing difficulty for levels & questnumbers
 		randomWord = getRandomWord();
 	}
 
-	string input;
+	char input;
 	do {
 		cout << "Press Enter to attack or 0 to exit...\n"; // Enter to attack and 0 to exit
-		cin.ignore();
-		getline(cin, input);
+		input = _getch();
 
 
-		if (input == "0") {
+		if (input == '0') {
 			clearScreen();
-			displayCharacter();
-			endingProgram(major_difficulty);
+			character.score = 0;
+			Gamesetup();
 			break;
 		}
 
-		int attackByCharacter = rand() % 100;
-		int attackByEnemy = rand() % 10;
+		int attackByCharacter = rand() % 50;
+		int attackByEnemy = rand() % 20;
 
 		if (attackByCharacter == 0) {
 			cout << randomWord << " survived " << character.Name << "'s attack." << endl << endl;
@@ -942,12 +929,12 @@ void EasyBattle(int questnumber) {
 		if (randomWord_health <= 0) {
 			cout << character.Name << " defeated " << randomWord;
 			character.Health = 100;                                        // If won
-			character.EXP += 5;
+			character.EXP += 10;
 			break;
 		}
 
 		cout << "Press Enter to see enemy's attack...\n";
-		getline(cin, input);
+		input = _getch();
 
 		if (attackByEnemy == 0) {
 			cout << character.Name << " survived " << randomWord << "'s attack." << endl << endl;
@@ -963,7 +950,7 @@ void EasyBattle(int questnumber) {
 		if (character.Health <= 0) {
 			cout << randomWord << " defeated " << character.Name;
 			character.Health = 0;
-			character.EXP -= (questnumber * 5);
+			character.EXP -= (questnumber * 5 + 5);
 			clearScreen();                                            // If lost
 			cout << "\n\nYOU HAVE LOST\n\n";
 			endingProgram(major_difficulty);
@@ -971,7 +958,7 @@ void EasyBattle(int questnumber) {
 		}
 
 
-	} while (character.Health >= 0 && randomWord_health >= 0);
+	} while (character.Health >= 0 || randomWord_health >= 0);
 
 
 	if (maxscore <= character.score) {
@@ -994,88 +981,97 @@ int levelUp(int a) {
 }
 
 //Function for bosslevel
-void Bosslevel(int x) {
+void Bosslevel() {
 	srand(time(0)); //random number simulation
-	int ur_attak = 0, boss_attack = 0;
-
-	if (x > 1) {                                                   //if level > 5 boss level
-		cout << "YOU HAVE REACHED BOSS LEVEL." << endl << endl;
-		int randomWord_health = 500;
-		do {
-			int ur_attack = rand() % 30;
-			int boss_attack = rand() % 10;
-			if (ur_attack == 0) {
-				cout << "BOSS" << " survived " << character.Name << "'s attack." << endl;
-			}
-			else {
-				cout << character.Name << " attacked " << "BOSS" << " for " << ur_attack << " damage." << endl;
-			}
-			randomWord_health = randomWord_health - ur_attack;
-			character.score = character.score + ur_attack;
+	int ur_attack = 0, boss_attack = 0;
 
 
-			if (randomWord_health <= 0) {
-				cout << character.Name << " defeated " << "BOSS" << endl << endl;
-				cout << "You Won.";                    //VICTORY
-				break;
-			}
 
-			if (boss_attack == 0) {
-				cout << character.Name << " survived " << "BOSS" << "'s attack." << endl;
-			}
-
-			else {
-				cout << "BOSS" << " attacked " << character.Name << " for " << boss_attack << " damage." << endl;
-			}
-			character.Health = character.Health - boss_attack;
-			character.score = character.score - boss_attack;
-
-			if (character.score < 0) {
-				character.score = 0;
-			}
-
-			if (character.Health <= 0) {
-				cout << "BOSS" << " defeated " << character.Name;
-				character.Health = 0;
-				displayCharacter();
-				cout << "\n\n";
-				endingProgram(major_difficulty);                //if lost game end
-				if (character.Health < 0)
-					character.Health = 0;
-
-				if (character.EXP < 0) {
-					character.EXP = 0;
-				}
-				break;
-			}
+	cout << "YOU HAVE REACHED BOSS LEVEL." << endl << endl;
+	int randomWord_health = 500;
+	char input;
+	do {
+		cout << "Press Enter to attack or 0 to exit...\n"; // Enter to attack and 0 to exit
+		input = _getch();
 
 
-		} while (character.Health >= 0 || randomWord_health >= 0);
+		if (input == '0') {
+			clearScreen();
+			Gamesetup();
+			break;
+		}
 
+		ur_attack = rand() % 50;
+		boss_attack = rand() % 10 + 20;
 
-		if (major_difficulty == "easy" || major_difficulty == "Easy") {
-			if (maxscore <= character.score)
-				maxscore = character.score;                         //highscore if u r playing easy
-			WriteHighScore(maxscore);
+		if (ur_attack == 0) {
+			cout << "Boss   survived " << character.Name << "'s attack." << endl << endl;
+		}
+		else {
+			cout << character.Name << " attacked " << "Boss" << " for " << ur_attack << " damage." << endl << endl;
+		}
+		randomWord_health -= ur_attack;
+		character.score += ur_attack;
+
+		if (randomWord_health <= 0) {
+			cout << character.Name << " defeated " << "Boss";
+			cout << "\n\n\nCONGRATULATIONS...........YOU CONQUERED THE LAND OF ELDORIA.";
+			exit(0);
+			character.Health = 100;                                        // If won
+			character.EXP += 5;
+			break;
+		}
+
+		cout << "Press Enter to see enemy's attack...\n";
+		input = _getch();
+
+		if (boss_attack == 0) {
+			cout << character.Name << " survived " << "Boss attack." << endl << endl;
+		}
+		else {
+			cout << "Boss  attacked " << character.Name << " for " << boss_attack << " damage." << endl << endl;
+		}
+		character.Health -= boss_attack;
+		character.score -= boss_attack;
+
+		character.score = max(0, character.score);
+
+		if (character.Health <= 0) {
+			cout << "Boss  defeated " << character.Name;
+			character.Health = 0;
+			clearScreen();                                            // If lost
+			cout << "\n\nYOU HAVE LOST\n\n";
+			endingProgram(major_difficulty);
+			break;
 		}
 
 
-		if (major_difficulty == "medium" || major_difficulty == "Medium") {
-			if (maxscore2 <= character.score)
-				maxscore2 = character.score;                         //highscore if u r playing medium
-			WriteHighScore2(maxscore2);
-		}
+	} while (character.Health >= 0 || randomWord_health >= 0);
 
 
-		if (major_difficulty == "hard" || major_difficulty == "Hard") {
-			if (maxscore3 <= character.score)
-				maxscore3 = character.score;                         //highscore if u r playing  hard
-			WriteHighScore3(maxscore3);
-		}
-
-
+	if (major_difficulty == "easy" || major_difficulty == "Easy") {
+		if (maxscore <= character.score)
+			maxscore = character.score;                         //highscore if u r playing easy
+		WriteHighScore(maxscore);
 	}
+
+
+	if (major_difficulty == "medium" || major_difficulty == "Medium") {
+		if (maxscore2 <= character.score)
+			maxscore2 = character.score;                         //highscore if u r playing medium
+		WriteHighScore2(maxscore2);
+	}
+
+
+	if (major_difficulty == "hard" || major_difficulty == "Hard") {
+		if (maxscore3 <= character.score)
+			maxscore3 = character.score;                         //highscore if u r playing  hard
+		WriteHighScore3(maxscore3);
+	}
+
+
 }
+
 
 
 //Function for adding items to inventory
@@ -1091,6 +1087,7 @@ void addRewardToInventory(const string& reward) {
 
 //Function for displaying inventory
 void displayInventory() {
+	clearScreen();
 	cout << "Inventory Contents:" << endl;
 	bool isEmpty = true;
 
@@ -1098,47 +1095,84 @@ void displayInventory() {
 		if (!inventory[i].empty()) {
 			cout << "Slot " << i + 1 << ": " << inventory[i] << endl;
 			isEmpty = false;
+
+
 		}
+
 	}
 
 	if (isEmpty) {
 		cout << "Inventory is empty." << endl;
 	}
+	char k;
+	cout << "Press Enter to go back.";
+	k = _getch();
+	if (true) {
+		clearScreen();
+		Gamesetup();
+	}
+
 }
 
 //Story for class warrior
 void addtoStory1(const string& describe) {
-	story1 = story1 + "has cleared " + describe;
+	story1 = story1 + "has cleared " + describe + "\n";
 }
 
 //Story  for  class rogue
 void addtoStory2(const string& describe) {
-	story2 = story2 + describe;
+	story2 = story2 + "has cleared " + describe + "\n";
 }
 
 //Story for class mage
 void addtoStory3(const string& describe) {
-	story3 = story3 + describe;
+	story3 = story3 + "has cleared " + describe + "\n";
 }
 
 
 //Showing stories function
 void Showstory() {
 	char take3;
-	cout << "Enter class to view story:\n1.Warrior\n2.Rogue\n3.Mage\nChoose from (1-3):";
+	char k;
+	cout << "Enter class to view story:\n1.Warrior\n2.Rogue\n3.Mage\nPress 0 to go back\nChoose from (1-3):";
 	cin >> take3;
 	switch (take3) {
 	case '1':
-		cout << story1 << endl << endl;
+		clearScreen();
+		cout << story1 << endl << endl << "Press Enter to go back";
+		k = _getch();
+		if (true) {
+			clearScreen();
+			Showstory();
+		}
 		break;
 	case '2':
-		cout << story2 << endl << endl;
+		clearScreen();
+		cout << story2 << endl << endl << "Press Enter to go back";
+		k = _getch();
+		if (true) {
+			clearScreen();
+			Showstory();
+		}
 		break;
 	case '3':
-		cout << story3 << endl << endl;
+		clearScreen();
+		cout << story3 << endl << endl << "Press Enter to go back";
+		k = _getch();
+		if (true) {
+			clearScreen();
+			Showstory();
+		}
 		break;
+	case '0':
+	{
+		clearScreen();
+		Gamesetup();
+	}
+	break;
 	default:
 		cout << "Invalid Input.";
+		cin >> take3;
 	}
 }
 
@@ -1239,9 +1273,16 @@ void WriteHighScore3(int score) {
 
 //Funtion for displaying highscores
 void showHighscore() {
+	char k;
 	cout << "\nEASY: " << maxscore;
 	cout << "\nMEDIUM: " << maxscore2;
 	cout << "\nHARD: " << maxscore3;
+	cout << "\nPress Enter key to go back";
+	k = _getch();
+	if (true) {
+		clearScreen();
+		Gamesetup();
+	}
 	cout << "\n\n";
 }
 
