@@ -8,38 +8,38 @@
 
 using namespace std;
 
-void Gamesetup();                                                                                                      //Ln 83
-void Menu();                                                                                                           //Ln 129               //Functions Prototypes
-void Showquestsandbattle();                                                                                            //Ln 142
-void endingProgram(string difficulty);                                                                                 //Ln 175
-void characterCreation();                                                                                              //Ln 216
-bool isValidclass(string Class);                                                                                       //Ln 242
-void displayCharacter();                                                                                               //Ln 252
-string difficultyLevel();                                                                                              //Ln 270
-bool isValiddifficulty(string difficulty);                                                                             //Ln 283
-void WarriorQuests();                                                                                                  //Ln 293
-void RogueQuests();                                                                                                    //Ln 421
-void MageQuests();                                                                                                     //Ln 553
-string getRandomWord();                                                                                                //Ln 686
-void HardBattle(int questnumber);                                                                                      //Ln 697
-void MediumBattle(int questnumber);                                                                                    //Ln 793                //Functions Prototypes
-void EasyBattle(int questnumber);                                                                                      //Ln 899
-int levelUp(int a);                                                                                                    //Ln 985
-void Bosslevel();                                                                                                      //Ln 997
-void addRewardToInventory(const string& reward);                                                                       //Ln 1082
-void displayInventory();                                                                                               //Ln 1097
-void addtoStory1(const string& describe);                                                                              //Ln 1110
-void addtoStory2(const string& describe);                                                                              //Ln 1115
-void addtoStory3(const string& describe);                                                                              //Ln 1120
-void Showstory();                                                                                                      //Ln 1126
-int ReadHighScore();                                                                                                   //Ln 1148
-void WriteHighScore(int score);                                                                                        //Ln 1166               //Functions   Prototypes
-int ReadHighScore2();                                                                                                  //Ln 1178
-void WriteHighScore2(int score);                                                                                       //Ln 1197 
-int ReadHighScore3();                                                                                                  //Ln 1209
-void WriteHighScore3(int score);                                                                                       //Ln 1228
-void showHighscore();                                                                                                  //Ln 1241
-void clearScreen();                                                                                                    //Ln 1250
+void Gamesetup();
+void Menu();                                                                                                                          //Functions Prototypes
+void Showquestsandbattle();
+void endingProgram(string difficulty);
+void characterCreation();
+bool isValidclass(string Class);
+void displayCharacter();
+string difficultyLevel();
+bool isValiddifficulty(string difficulty);
+void WarriorQuests();
+void RogueQuests();
+void MageQuests();
+string getRandomWord();
+void HardBattle(int questnumber);
+void MediumBattle(int questnumber);                                                                                                    //Functions Prototypes
+void EasyBattle(int questnumber);
+int levelUp(int a);
+void Bosslevel();
+void addRewardToInventory(const string& reward);
+void displayInventory();
+void addtoStory1(const string& describe);
+void addtoStory2(const string& describe);
+void addtoStory3(const string& describe);
+void Showstory();
+int ReadHighScore();
+void WriteHighScore(int score);                                                                                    // Functions   Prototypes
+int ReadHighScore2();
+void WriteHighScore2(int score);
+int ReadHighScore3();
+void WriteHighScore3(int score);
+void showHighscore();
+void clearScreen();
 
 string major_difficulty = "easy";     // setting up default difficulty easy
 
@@ -92,7 +92,7 @@ menuLabel: // Label for goto statement
 	Menu();
 	cin >> take;
 	if (cin.fail() || take < 0 || take > 5) {
-		cout << "Invalid input. Please enter a number between 0 and 5.\n" << endl;
+		cout << "\n\nInvalid input. Please enter a number between 0 and 5.\n" << endl;
 		cin.clear();
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 		clearScreen();
@@ -209,7 +209,7 @@ back:
 		cout << "Enter your choice (0-4): ";
 		cin >> take2;
 		if (cin.fail() || take2 < 0 || take2 > 5) {
-			cout << "Invalid input. Please enter a number between 0 and 5.\n" << endl;
+			cout << "\n\nInvalid input. Please enter a number between 0 and 5.\n" << endl;
 			cin.clear();
 			cin.ignore(numeric_limits<streamsize>::max(), '\n');
 			clearScreen();
@@ -258,43 +258,47 @@ back:
 
 
 void characterCreation() {
+	int start;
 
 	cout << "Enter name of your Character: ";
 	cin >> character.Name;
-	cin.ignore(1000, '\n');
-	cout << "Choose your class('Warrior','Rogue','Mage'): ";
+	cin.ignore(numeric_limits<streamsize>::max(), '\n');
+start:
+	cout << "Choose your class ('Warrior', 'Rogue', 'Mage'): ";
 	cin >> character.Class;
+	cin.ignore(numeric_limits<streamsize>::max(), '\n');
+	while (cin.eof())
+	{
+		exit(0);
+	}
 
-	while (true) {
-		cin >> character.Class;
-		cin.clear();
-		//cin.ignore(numeric_limits<streamsize>::max(), '\n');
+	while (!isValidclass(character.Class))
+	{
+		if (cin.eof()) {
+			break;
+			clearScreen();
+			cout << "Unexpected input. Exiting character creation.\n";
+			break;
+		}
 
 		if (isValidclass(character.Class)) {
 			clearScreen();
 			break;
 		}
 		else {
-			cout << "Invalid Class. Provide a Valid Class: ";
+			clearScreen();
+			cout << "Invalid Class. Provide a Valid Class or type 'exit' to quit: ";
 		}
 	}
 
-	cin.clear();
-	cin.ignore();
-	character.Health = 100;                                         //Function for Character Creation
+
+
+	character.Health = 100;
 	character.EXP = 0;
 	character.level = 1;
-	while (!isValidclass(character.Class)) {
-		cout << "Invalid Class. provide a Valid Class: ";
-		cin >> character.Class;
-	}
-	if (isValidclass(character.Class)) {
-		clearScreen();
-	}
 }
 
 
-// Function for cheking valid class
 bool isValidclass(string Class) {
 	if (Class == "Warrior" || Class == "Rogue" || Class == "Mage") {
 		return true;
