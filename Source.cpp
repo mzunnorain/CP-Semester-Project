@@ -58,6 +58,7 @@ string story3 = "In the arcane halls of Eldoria, the mage weaves spells as intri
 
 int main() {
 	Gamesetup();            //main function
+	system("pause");
 	return 0;
 }
 
@@ -82,48 +83,67 @@ struct Quest {
 
 //Main driver of the program
 void Gamesetup() {
-	char take;
+	int take;
 	string difficulty = major_difficulty;
+	int menuLabel;
 
-	do {
-		Menu();
-		cin >> take;
-		cin.ignore(1000, '\n');
-		switch (take) {
-		case '1':
-			clearScreen();
-			Showquestsandbattle(); // Pass the selected difficulty
-			break;
-		case '2':
-			clearScreen();
-			showHighscore();
-			break;
-		case '3':
-			clearScreen();
-			difficulty = difficultyLevel(); // Set the difficulty
-			major_difficulty = difficulty;
-			clearScreen();
-			cout << "\n\n";
-			break;
-		case '4':
-			clearScreen();
-			displayInventory();
-			cout << "\n\n";
-			break;
-		case '5':
-			clearScreen();
-			Showstory();
-			break;
-		case '6':
-			exit(0);
-			break;
-		default:
-			clearScreen();
-			Gamesetup();
-		}
+menuLabel: // Label for goto statement
 
-	} while (take != 6);
+	Menu();
+	cin >> take;
+	if (cin.fail() || take < 0 || take > 5) {
+		cout << "Invalid input. Please enter a number between 0 and 5.\n" << endl;
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		clearScreen();
+		goto menuLabel; // Jump back to the Menu
+	}
+
+	clearScreen();
+	if (cin.eof())
+	{
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		clearScreen();
+		goto menuLabel;
+	}
+
+
+	switch (take) {
+	case 1:
+		clearScreen();
+		Showquestsandbattle(); // Pass the selected difficulty
+		break;
+	case 2:
+		clearScreen();
+		showHighscore();
+		break;
+	case 3:
+		clearScreen();
+		difficulty = difficultyLevel(); // Set the difficulty
+		major_difficulty = difficulty;
+		clearScreen();
+		cout << "\n\n";
+		break;
+	case 4:
+		clearScreen();
+		displayInventory();
+		cout << "\n\n";
+		break;
+	case 5:
+		clearScreen();
+		Showstory();
+		break;
+	case 0:
+		exit(0);
+		break;
+	default:
+		clearScreen();
+		goto menuLabel; // Jump back to the Menu
+	}
+	clearScreen();
+	goto menuLabel; // Loop back to the Menu after finishing a task
 }
+
 
 
 //Displaying Menu
@@ -134,7 +154,7 @@ void Menu() {
 	cout << "3. Difficulty.\n";
 	cout << "4. Inventory.\n";
 	cout << "5. Storyline.\n";
-	cout << "6. Exit.\n";
+	cout << "0. Exit.\n";
 	cout << "Enter your choice (1-6): ";
 }
 
@@ -175,44 +195,64 @@ void Showquestsandbattle() {
 //After every battle end game end show this menu
 void endingProgram(string difficulty) {
 
-	char take2;
+	int take2;
+	int back;
+back:
+
+
 	do {
 		cout << "\n\n1. Start Again.\n";
 		cout << "2. High Scores.\n";
 		cout << "3. Inventory.\n";
 		cout << "4. Storyline.\n";
-		cout << "5. Exit.\n";
-		cout << "Enter your choice (1-5): ";
+		cout << "0. Exit.\n";
+		cout << "Enter your choice (0-4): ";
 		cin >> take2;
+		if (cin.fail() || take2 < 0 || take2 > 5) {
+			cout << "Invalid input. Please enter a number between 0 and 5.\n" << endl;
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			clearScreen();
+			goto back; // Jump back to the Menu
+		}
+
+
+		if (cin.eof())
+		{
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			clearScreen();
+			goto back;
+		}
+
 		cin.ignore(1000, '\n');
 		switch (take2) {
-		case '1':
+		case 1:
 			clearScreen();
 			character.score = 0;
 			Showquestsandbattle();
 			break;
-		case '2':
+		case 2:
 			clearScreen();
 			showHighscore();
 			exit(0);                   //exit after showing
 			break;
-		case '3':
+		case 3:
 			clearScreen();
 			displayInventory();
 			exit(0);         //exit after showing
 			break;
-		case '4':
+		case 4:
 			clearScreen();
 			Showstory();
 			exit(0);
 			break;
-		case '5':
+		case 0:
 			exit(0);
 			break;
 		default:
 			cout << "Invalid Input.";
 		}
-	} while (take2 != 5);
+	} while (take2 != 0);
 
 }
 
@@ -221,17 +261,31 @@ void characterCreation() {
 
 	cout << "Enter name of your Character: ";
 	cin >> character.Name;
-	cin.clear();
 	cin.ignore(1000, '\n');
 	cout << "Choose your class('Warrior','Rogue','Mage'): ";
 	cin >> character.Class;
+
+	while (true) {
+		cin >> character.Class;
+		cin.clear();
+		//cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+		if (isValidclass(character.Class)) {
+			clearScreen();
+			break;
+		}
+		else {
+			cout << "Invalid Class. Provide a Valid Class: ";
+		}
+	}
+
 	cin.clear();
 	cin.ignore();
 	character.Health = 100;                                         //Function for Character Creation
 	character.EXP = 0;
 	character.level = 1;
 	while (!isValidclass(character.Class)) {
-		cout << "(Invalid Class. provide a Valid Class): ";
+		cout << "Invalid Class. provide a Valid Class: ";
 		cin >> character.Class;
 	}
 	if (isValidclass(character.Class)) {
@@ -272,25 +326,37 @@ void displayCharacter() {
 string difficultyLevel() {
 	string difficulty;
 	cout << "Choose your difficulty Level (Easy, Medium, Hard)\n";
-	getline(cin, difficulty);
-	while (!isValiddifficulty(difficulty)) {              //not getting difficulty right
-		cout << "Enter Valid Input: ";
-		getline(cin, difficulty);
-		clearScreen();
+
+	while (true) {
+		if (!getline(cin, difficulty)) {
+			if (cin.eof()) {
+				cin.clear();
+				//cin.ignore(numeric_limits<streamsize>::max(), '\n');
+				cout << "End of input detected. Please re-enter difficulty: ";
+				continue;
+			}
+			else {
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+				cout << "Invalid Input:";
+				getline(cin, difficulty);
+				cin.clear();
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			}
+		}
+
+		if (isValiddifficulty(difficulty)) {
+			break;
+		}
+
 	}
 
 	return difficulty;
 }
 
-// Funtion for checking diffiulty level
 bool isValiddifficulty(string difficulty) {
-	if (difficulty == "Easy" || difficulty == "Medium" || difficulty == "Hard" || difficulty == "easy" || difficulty == "medium" || difficulty == "hard") {
-		return true;
-	}
-	else
-		return false;
+	return (difficulty == "Easy" || difficulty == "Medium" || difficulty == "Hard" ||
+		difficulty == "easy" || difficulty == "medium" || difficulty == "hard");
 }
-
 
 // Function for the quests of Warrior
 void WarriorQuests() {
@@ -328,7 +394,7 @@ void WarriorQuests() {
 		if (cin.fail() || choice < 0 || choice > 5) {
 			cout << "Invalid input. Please enter a number between 1 and 5.\n" << endl;
 			cin.clear();
-			cin.ignore();
+			cin.ignore(1000, '\n');
 		}
 		else {
 			break;
@@ -411,7 +477,7 @@ void WarriorQuests() {
 	}
 
 
-	//Battles according to the diffiulties and passing the questnumber to inrease difficulties of eah quest
+	//Battles according to the diffiulties and passing the questnumber to inrease difficulties of each quest
 	if (major_difficulty == "easy" || major_difficulty == "Easy") {
 		EasyBattle(choice);
 	}
@@ -705,7 +771,7 @@ void MageQuests() {
 string getRandomWord() {
 	char words[][20] = { "DRAGON", "DRAKULLA", "ANACONDA", "SHADOW", "GODZILLA", "DARKFIRE", "NETHERWING", "GHOST", "TIGER" };
 
-	int numWords = sizeof(words) / sizeof(words[0]);         //getting total words in the arrray
+	int numWords = sizeof(words) / sizeof(words[0]);         //getting total words in the array
 
 	srand((time(0)));
 	int index = rand() % numWords;
@@ -971,7 +1037,7 @@ void EasyBattle(int questnumber) {
 //Function for levelling up
 int levelUp(int a) {
 	int increase = 100;
-	int characterInitialhealth = 100;
+	//int characterInitialhealth = 100;
 	if (a >= increase) {
 		character.level++;
 		character.EXP = 0;
@@ -1132,12 +1198,12 @@ void addtoStory3(const string& describe) {
 
 //Showing stories function
 void Showstory() {
-	char take3;
+	int take3;
 	char k;
 	cout << "Enter class to view story:\n1.Warrior\n2.Rogue\n3.Mage\nPress 0 to go back\nChoose from (1-3):";
 	cin >> take3;
 	switch (take3) {
-	case '1':
+	case 1:
 		clearScreen();
 		cout << story1 << endl << endl << "Press Enter to go back";
 		k = _getch();
@@ -1146,7 +1212,7 @@ void Showstory() {
 			Showstory();
 		}
 		break;
-	case '2':
+	case 2:
 		clearScreen();
 		cout << story2 << endl << endl << "Press Enter to go back";
 		k = _getch();
@@ -1155,7 +1221,7 @@ void Showstory() {
 			Showstory();
 		}
 		break;
-	case '3':
+	case 3:
 		clearScreen();
 		cout << story3 << endl << endl << "Press Enter to go back";
 		k = _getch();
@@ -1164,7 +1230,7 @@ void Showstory() {
 			Showstory();
 		}
 		break;
-	case '0':
+	case 0:
 	{
 		clearScreen();
 		Gamesetup();
